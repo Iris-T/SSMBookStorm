@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.iris.mapper.BookMapper">
+
+<!--    int addOneBook(Books book);-->
+    <insert id="addOneBook" parameterType="Books">
+        INSERT INTO books(bookID, bookName, bookCounts, detail)
+        VALUES (#{bookID},#{bookName},#{bookCounts},#{detail});
+    </insert>
+
+<!--    int delOneBookById(int bookID);-->
+    <delete id="delOneBookById" parameterType="int">
+        DELETE FROM books WHERE bookID = #{bookID};
+    </delete>
+
+<!--    int updateBookById(Books book);-->
+    <update id="updateBookById" parameterType="Books">
+        UPDATE books SET
+                bookName = #{bookName},
+                bookCounts = #{bookCounts},
+                detail = #{detail}
+        WHERE bookID = #{bookID};
+    </update>
+
+<!--    Books queryBookById(int bookID);-->
+    <select id="queryBookById" parameterType="int" resultType="Books">
+        SELECT * FROM books WHERE bookID = #{bookID};
+    </select>
+
+<!--    List<Books> queryAllBooks();-->
+    <select id="queryAllBooks" resultType="Books">
+        SELECT * FROM books;
+    </select>
+
+<!--    List<Books> queryBookByName();-->
+    <select id="queryBookByName" parameterType="java.lang.String" resultType="Books">
+        SELECT * FROM books WHERE bookName like #{bookName};
+    </select>
+
+</mapper>
