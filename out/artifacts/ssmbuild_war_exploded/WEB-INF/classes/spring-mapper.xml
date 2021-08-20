@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--关联数据库配置文件-->
+    <context:property-placeholder location="classpath:database.properties"/>
+
+    <!--连接池-->
+    <bean id="datasource" class="com.alibaba.druid.pool.DruidDataSource"
+          destroy-method="close" lazy-init="false">
+        <property name="driverClassName" value="${jdbc.driver}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+        <!--初始连接数-->
+        <property name="initialSize" value="1"/>
+        <!--最大活跃数/连接数（一般设置为理想状态的并发数）-->
+        <property name="maxActive" value="50"/>
+        <!--最大建立连接等待时间，超过报异常，-1为无限制-->
+        <property name="maxWait" value="30000"/>
+        <!--当连接失败重试次数 默认为false，会进行重连-->
+        <property name="breakAfterAcquireFailure" value="false"/>
+        <!--关闭连接后不自动Commit事务 默认为false，不自动提交-->
+        <property name="defaultAutoCommit" value="false"/>
+    </bean>
+
+    <!--SqlSessionFactory-->
+    <bean class="org.mybatis.spring.SqlSessionFactoryBean"
+          id="sqlSessionFactory">
+        <property name="dataSource" ref="datasource"/>
+        <!--绑定Mybatis配置文件-->
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+    </bean>
+
+    <!--配置mapper接口扫描包
+    动态实现mapper接口可注入Spring容器中-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!--注入sqlSessionFactory-->
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+        <!--扫描目标mapper包-->
+        <property name="basePackage" value="cn.iris.mapper"/>
+    </bean>
+
+</beans>
